@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 
 const {
   requireAuth,
@@ -17,7 +17,7 @@ const initAdminUser = (app, next) => {
 
   const adminUser = {
     email: adminEmail,
-    password: bcrypt.hashSync(adminPassword, 10),
+    password: bcryptjs.hashSync(adminPassword, 10),
     roles: "admin",
   };
 

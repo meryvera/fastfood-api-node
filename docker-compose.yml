@@ -2,19 +2,28 @@ version: "3"
 services:
   db:
     # TODO: Set up your database image, we recommend one of these:
-    # https://hub.docker.com/_/mongo
-    # https://hub.docker.com/_/postgres
-    # https://hub.docker.com/_/mysql
+    image: mongo:4
+    volumes:
+      - ./db-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: fastfood
+      MONGO_INITDB_ROOT_PASSWORD: secretpswd
+    restart: always
     networks:
+      - public
       - private
+    expose:
+      - 27017
+    ports:
+      - 28017:27017
   node:
-    image: node:12 # https://hub.docker.com/_/node/
+    image: node:18 # https://hub.docker.com/_/node/
     user: node
     working_dir: /home/node/app
     environment:
       NODE_ENV: production
       PORT: 8080
-      DB_URL: <CONNECTION STRING>
+      DB_URL: mongodb://fastfood:secretpswd@db:27017/bq?authSource=admin
       JWT_SECRET: xxxxxxxx
       ADMIN_EMAIL: admin@localhost
       ADMIN_PASSWORD: changeme
