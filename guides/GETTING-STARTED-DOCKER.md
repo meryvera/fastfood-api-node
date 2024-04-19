@@ -279,7 +279,7 @@ al puerto `28017` del host de docker.
 Si estás usando PostgreSQL o MySQL, los puertos que nos interesaría mapear
 serían el `5432` y `3306` respectivamente.
 
-Si estamos _exponiendo_ el puerto en nuestra computadora (el _host_), además
+Si estamos _exponiendo_ el puerto en nuestra computadora (el _host_), además de conectar el contenedor `db` a la red _privada_ ,
 tendrás también que conectar el contenedor `db` a la red _pública_:
 
 ```yaml
@@ -308,12 +308,33 @@ pgadmin:
     - public
     - private
 ```
+NOTA 1: Para usar la interfaz grafica mongo compass, debemos:
 
-NOTA: Para conectar desde pgAdmin usando un contenedor, usa el _nombre_ del
+  a) Descargar en mi host a mongo compass  
+  b) Settear la conexión entre mongo compass y el container de la BD mongoDb que ya fue conectado al PORT 28017 de mi host:
+
+      La URI:
+   ```yml
+    mongodb://fastfood:secretpswd@localhost:28017/bq?authSource=admin
+  ```
+  * mongodb:// es el esquema que indica que se trata de una conexión a MongoDB.
+  * fastfood:secretpswd son las credenciales de usuario y contraseña que especificaste en tu archivo docker-compose.yml.
+  * @localhost:28017 indica que MongoDB está corriendo localmente y en el puerto 28017, que es el puerto mapeado a través de Docker.
+  * /bq es el nombre de la base de datos a la que quieres conectarte.
+  * ?authSource=admin es un parámetro de la cadena de conexión que indica que la autenticación debe hacerse contra la base de datos de administración.
+
+NOTA 2: Para conectar desde pgAdmin usando un contenedor, usa el _nombre_ del
 contenedor de la base datos (ie: `XXX-001-burger-queen-api_db_1`) como nombre
 de host para que pgAdmin se pueda conectar a través de la red _privada_.
 
 ## 7. Corre las pruebas de integración (e2e)
+
+
+Antes de correr los test, debemos instalar todas las dependencias setteadas en el package.json
+
+  ```bsh
+    npm i
+  ```
 
 El _boilerplate_ de este proyecto ya incluye pruebas `e2e` (end-to-end) o de
 _integración_, que se encargan de probar nuestra aplicación en conjunto,

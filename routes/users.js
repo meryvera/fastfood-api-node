@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs');
+const { connectToMongoDb } = require('../connect')
 
 const {
   requireAuth,
@@ -9,7 +10,7 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const initAdminUser = (app, next) => {
+const initAdminUser = async(app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
     return next();
@@ -24,6 +25,19 @@ const initAdminUser = (app, next) => {
   // TODO: Create admin user
   // First, check if adminUser already exists in the database
   // If it doesn't exist, it needs to be saved
+  try {
+    const db = await connectToMongoDb();
+    const collectionUsers = db.collection('users');
+    const user = await collectionUsers.findOne({ email: adminUser.email });
+    if (!user) {
+      await collectionUsers.insertOne(adminUser);
+      console.log('Admin user created successfully');
+    }
+  } catch (error) {
+    console.error('Error creating admin user', error);
+    return next(error);
+  }
+
 
   next();
 };

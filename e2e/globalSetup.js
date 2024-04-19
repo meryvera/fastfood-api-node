@@ -1,13 +1,17 @@
 const path = require('path');
 const { spawn } = require('child_process');
 const kill = require('tree-kill');
-const { MongoClient } = require('mongodb');
 
 const mongoGlobalSetup = require("@shelf/jest-mongodb/lib/setup");
 
 const config = require('../config');
+// configurado para iniciar tu servidor localmente y esperar
+// a que esté completamente listo antes de proceder con las pruebas e2e.
+// El error al correr npm run test:e2e indica que el servidor no respondió correctamente o 
+// lo suficientemente rápido según lo esperado por la función waitForServerToBeReady.
 
-const port = process.env.PORT || 80; // 8080
+const port = process.env.PORT || 8888; // 8080
+// no puede ser 80 porque ya esta tomado por el servidor que corre en el port 80
 const baseUrl = process.env.REMOTE_URL || `http://127.0.0.1:${port}`;
 
 const __e2e = {

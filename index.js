@@ -5,10 +5,8 @@ const errorHandler = require('./middleware/error');
 const routes = require('./routes');
 const pkg = require('./package.json');
 
-const { connect } = require('./connect');
-
 const { port, secret } = config;
-// console.log(port, secret);
+console.log('👀👀', port, secret);
 const app = express();
 
 app.set('config', config);
@@ -27,17 +25,10 @@ routes(app, (err) => {
 
   app.use(errorHandler);
 
-  // app.listen(port, () => {
-  //   console.info(`App listening on port ${port}`);
-  // });
+  app.listen(port, () => {
+    console.info(`🎖️🐙 App listening on port ${port}`);
+  });
 });
 
 // Conectar a la base de datos y luego iniciar el servidor
-connect().then(() => {
-  app.listen(port, () => {
-    console.info(`App listening on port ${port}`);
-  });
-}).catch((error) => {
-  console.error('Database connection failed', error);
-  process.exit(1);
-});
+// connectToMongoDb()
